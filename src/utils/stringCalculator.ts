@@ -4,7 +4,6 @@ export function add(input: string): number {
   let delimiterRegex = /,|\n/;
   let numbers = input;
 
-  // Check for custom delimiter
   if (input.startsWith("//")) {
     const delimiterEndIndex = input.indexOf("\n");
     const delimiter = input.substring(2, delimiterEndIndex);
@@ -12,6 +11,12 @@ export function add(input: string): number {
     numbers = input.substring(delimiterEndIndex + 1);
   }
 
-  const numArray = numbers.split(delimiterRegex);
-  return numArray.reduce((sum, num) => sum + parseInt(num), 0);
+  const numArray = numbers.split(delimiterRegex).map(Number);
+
+  const negatives = numArray.filter(n => n < 0);
+  if (negatives.length > 0) {
+    throw new Error(`negative numbers not allowed ${negatives.join(",")}`);
+  }
+
+  return numArray.reduce((sum, num) => sum + num, 0);
 }
